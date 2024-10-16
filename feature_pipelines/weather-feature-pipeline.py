@@ -73,7 +73,6 @@ schema = DataFrameSchema(
 )
 weather_data = schema.validate(weather_data)
 schema.to_json("pandera_schemas/weather-feature-pipeline-daily-schema.json")
-# print(weather_data)
 
 project = hopsworks.login()
 fs = project.get_feature_store()

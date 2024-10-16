@@ -27,7 +27,6 @@ price_combined = pric_actual_fg.merge(price_pred_fg, on="date")
 price_combined["predicted_price"] = eur_sek_convert(price_combined["predicted_price"])
 price_combined["entsoe_avg"] = eur_sek_convert(price_combined["entsoe_avg"])
 progressBar.progress(60)
-# print(price_combined)
 
 total_mae_entsoe = (
     sum(abs(price_combined["entsoe_avg"] - price_combined["predicted_price"]))
@@ -105,8 +104,6 @@ st.dataframe(data=entsoe_mae.style.background_gradient(axis="columns", cmap="YlO
 st.markdown("""**elbruk.se dagspris MAE (SEK ÖRE)**""")
 st.dataframe(data=elbruk_mae.style.background_gradient(axis="columns", cmap="YlOrRd"))
 
-#####
-
 columns = ["total RMSE"] + [f"d + {i} RMSE" for i in range(1, 8)]
 entsoe_rmse_data = [total_rmse_entsoe] + [rmse for rmse in days_ahead_rmse_entsoe]
 entsoe_rmse_data += ["NaN"] * (8 - len(entsoe_rmse_data))
@@ -173,7 +170,7 @@ for i in range(1, 10):
 data = [dates, days_ahead, predicted_price, entsoe, entsoe_error, elbruk, elbruk_error]
 data = map(list, zip(*data))
 progressBar.progress(90)
-# print(data)
+
 last_n_results = pd.DataFrame(
     data=data,
     columns=[
@@ -186,7 +183,7 @@ last_n_results = pd.DataFrame(
         "predicted - elbruk",
     ],
 )
-# print(last_n_results)
+
 st.markdown("""**Detailed logging for latest 10 days**""")
 st.dataframe(data=last_n_results.style)
 progressBar.progress(100)

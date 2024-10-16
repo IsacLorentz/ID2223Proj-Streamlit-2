@@ -66,8 +66,6 @@ def g():
     if "windgust" in nan_cols and "windspeed" not in nan_cols:
         weather_data["windgust"] = weather_data["windspeed"]
 
-        # print(nan_cols)
-
     weather_data = weather_data[
         ["temp", "windgust", "windspeed", "winddir", "cloudcover", "date"]
     ].copy()

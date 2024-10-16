@@ -229,8 +229,6 @@ def g():
     price_predictions["date"] = features["date"]
     price_predictions["days_ahead"] = [i for i in range(1, 8)]
     price_predictions["predicted_price"] = price_pred_list
-    # print(price_predictions)
-    # print(price_predictions["predicted_price"])
     fs = project.get_feature_store()
 
     price_pred_fg = fs.get_or_create_feature_group(

@@ -16,9 +16,6 @@ end_date = pd.Timestamp(
 print('end date: ', end_date)
 country_code = "SE_3"
 
-# day_ahead_prices = client.query_day_ahead_prices(
-#     country_code, start=start_date, end=end_date
-# )
 day_ahead_prices = client.query_day_ahead_prices(
         country_code, start=start_date, end=end_date
     )
