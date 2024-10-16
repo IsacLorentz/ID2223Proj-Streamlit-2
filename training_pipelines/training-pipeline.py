@@ -40,8 +40,7 @@ def train_fn():
                                             labels=["price"],
                                             query=query)    
         feature_view.create_training_data()
-
-    # You can read training data, randomly split into train/test sets of features (X) and labels (y)        
+  
     X_train, X_test, y_train, y_test = feature_view.train_test_split(0.05)
     X_train, X_test = X_train.set_index('date'), X_test.set_index('date')
     # print('X_train: ', X_train.columns)
@@ -62,7 +61,7 @@ def train_fn():
     # We will now upload our model to the Hopsworks Model Registry. First get an object for the model registry.
     mr = project.get_model_registry()
 
-    # The contents of the 'iris_model' directory will be saved to the model registry. Create the dir, first.
+    # The contents of the 'price_model' directory will be saved to the model registry. Create the dir, first.
     model_dir="price_model"
     if os.path.isdir(model_dir) == False:
         os.mkdir(model_dir)

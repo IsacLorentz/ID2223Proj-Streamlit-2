@@ -27,12 +27,9 @@ else:
 dates_data = dates_data.dropna(axis=0)
 dates_data["date"] = pd.to_datetime(dates_data["date"]) 
 dates_data = dates_data.set_index("date")
-# print(dates_data)
 dates_data = dates_data.reset_index()
 
 dates_data["date"] = dates_data["date"].dt.strftime("%Y-%m-%d")
-# print(dates_data)
-# print(dates_data.dtypes)
 
 schema = DataFrameSchema(
         {
