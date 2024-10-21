@@ -54,6 +54,7 @@ def g():
         country_code, start=start_date, end=end_date
     )
 
+    # scrape the elbruk dagspris from the website
     URL = "https://www.elbruk.se/timpriser-se3-stockholm"
     page = requests.get(URL)
 

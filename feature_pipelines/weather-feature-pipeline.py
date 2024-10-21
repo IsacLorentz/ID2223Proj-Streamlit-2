@@ -49,11 +49,16 @@ weather_data = weather_data.dropna(axis=0)
 weather_data = weather_data[
     ["temp", "windgust", "windspeed", "winddir", "cloudcover", "date"]
 ].copy()
+# convert the date column to datetime
 weather_data["date"] = pd.to_datetime(weather_data["date"])
+# set the date column as the index
 weather_data = weather_data.set_index("date")
+# reset the index
 weather_data = weather_data.reset_index()
+# convert the date column to string
 weather_data["date"] = weather_data["date"].dt.strftime("%Y-%m-%d")
 
+# validate the data using pandera
 schema = DataFrameSchema(
     {
         "date": Column(
@@ -71,7 +76,9 @@ schema = DataFrameSchema(
         "cloudcover": Column(float, Check.in_range(0.0, 100.0)),
     }
 )
+# validate the data 
 weather_data = schema.validate(weather_data)
+# save the schema to a json file
 schema.to_json("pandera_schemas/weather-feature-pipeline-daily-schema.json")
 
 project = hopsworks.login()

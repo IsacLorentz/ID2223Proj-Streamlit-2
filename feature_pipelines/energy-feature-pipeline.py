@@ -39,8 +39,9 @@ if not exists("../data/energy.csv"):
             [day_ahead_prices, load, aggregate_water_reservoirs_and_hydro_storage],
             axis=1,
         )
+        # forward fill to fill in missing values
         result = result.ffill()
-
+        # concat the result to the energy_data dataframe
         energy_data = pd.concat([energy_data, result], axis=0)
 
         start_date = batch_end_date + pd.Timedelta(days=1)
@@ -54,13 +55,21 @@ if not exists("../data/energy.csv"):
 else:
     energy_data = pd.read_csv("../data/energy.csv")
 
+# drop the rows with missing values
 energy_data = energy_data.dropna(axis=0)
+# rename the columns
 energy_data.columns = ["date", "price", "load", "filling_rate"]
+# convert the date column to datetime
 energy_data["date"] = pd.to_datetime(energy_data["date"])
+# set the date column as the index
 energy_data = energy_data.set_index("date")
+# resample the data to daily mean
 energy_data = energy_data.resample("D").mean()
+# reset the index
 energy_data = energy_data.reset_index()
 energy_data["date"] = energy_data["date"].dt.strftime("%Y-%m-%d")
+
+# shift the price column to create the lag features
 energy_data["p_1"] = energy_data["price"].shift()
 energy_data["p_2"] = energy_data["price"].shift(2)
 energy_data["p_3"] = energy_data["price"].shift(3)
@@ -68,9 +77,13 @@ energy_data["p_4"] = energy_data["price"].shift(4)
 energy_data["p_5"] = energy_data["price"].shift(5)
 energy_data["p_6"] = energy_data["price"].shift(6)
 energy_data["p_7"] = energy_data["price"].shift(7)
+# drop the rows with missing values
 energy_data = energy_data.dropna()
+# reset the index
 energy_data = energy_data.reset_index(drop=True)
+# drop the first row since it is the first day of the dataset
 energy_data = energy_data.drop(index=0)
+# reset the index
 energy_data = energy_data.reset_index(drop=True)
 
 schema = DataFrameSchema(

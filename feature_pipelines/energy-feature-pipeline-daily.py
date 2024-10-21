@@ -10,7 +10,7 @@ if LOCAL == False:
     image = modal.Image.debian_slim().pip_install(
         ["hopsworks", "entsoe-py", "pandas", "pandera[io]"]
     )
-
+    # this was set to update at a different time than the date feature pipeline since the data was updated later
     @stub.function(
         image=image,
         schedule=modal.Cron("00 13 * * *"),
