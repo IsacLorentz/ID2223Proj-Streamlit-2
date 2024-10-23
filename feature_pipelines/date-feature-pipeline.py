@@ -11,6 +11,7 @@ from pandera import Check, Column, DataFrameSchema
 
 
 if not exists("../data/dates.csv"):
+    # TODO: make this dynamic by calling get_dates_data() from utils.utils
     start_date = "2020-12-19"
     end_date = "2022-12-19"
     date_list = pd.date_range(start=start_date, end=end_date)

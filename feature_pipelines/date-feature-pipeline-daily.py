@@ -45,7 +45,7 @@ def g():
     )
 
     dates_data = schema.validate(dates_data)
-
+    
     project = hopsworks.login()
     fs = project.get_feature_store()
 

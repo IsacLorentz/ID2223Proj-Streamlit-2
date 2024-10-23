@@ -160,6 +160,7 @@ def get_energy_data():
     energy_data["p_7"] = last_day_values["p_6"]
     energy_data["date"] = energy_data["date"].dt.strftime("%Y-%m-%d")
 
+    # shifting operation on the lagged price features (p_1 to p_7) in the energy_data DataFrame. It's adjusting these features for each day in the prediction period. 
     energy_data.iloc[1, 3:] = energy_data.iloc[0, 2:-1]
     energy_data.iloc[2, 4:] = energy_data.iloc[1, 3:-1]
     energy_data.iloc[3, 5:] = energy_data.iloc[2, 4:-1]
@@ -186,12 +187,14 @@ def query_last_day():
 def g():
     from pandera import DataFrameSchema
 
+    # model loading
     project = hopsworks.login()
     mr = project.get_model_registry()
     model = mr.get_model("price_modal", version=1)
     model_dir = model.download()
     model = joblib.load(model_dir + "/price_model.pkl")
 
+    # data collection and validation
     weather_data, energy_data, dates_data = (
         get_weather_data(),
         get_energy_data(),
@@ -211,16 +214,22 @@ def g():
     energy_data = energy_schema.validate(energy_data)
     dates_data = dates_schema.validate(dates_data)
 
+    # data merging
     wd = weather_data.merge(dates_data, on="date")
     features = wd.merge(energy_data, on="date")
 
+    # his loop predicts prices for 7 days. For each day:
+    # It makes a prediction using the current day's features.
+    # It updates the lagged price features (p_1 to p_7) for future days with this prediction.
+    # meaning that the predictions get less accurate as the days go on
     price_pred_list = []
     for i in range(0, 7):
         price_pred= model.predict(features.set_index("date").iloc[[i]])[0]
         price_pred_list.append(price_pred)
 
+        # shifting operation
         for j in range(i + 1, 8):
-            features.loc[j, f"p_{j - i}"] = price_pred
+                features.loc[j, f"p_{j - i}"] = price_pred
 
     features = features.reset_index()
     features = features.drop(index=7)
@@ -231,6 +240,7 @@ def g():
     price_predictions["predicted_price"] = price_pred_list
     fs = project.get_feature_store()
 
+    # Creates or retrieves a feature group in Hopsworks for storing predictions and inserts the new predictions into this feature group.
     price_pred_fg = fs.get_or_create_feature_group(
         name="price_predictions",
         version=1,

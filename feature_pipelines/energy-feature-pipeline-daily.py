@@ -10,7 +10,7 @@ if LOCAL == False:
     image = modal.Image.debian_slim().pip_install(
         ["hopsworks", "entsoe-py", "pandas", "pandera[io]"]
     )
-
+    # this was set to update at a different time than the date feature pipeline since the data was updated later
     @stub.function(
         image=image,
         schedule=modal.Cron("00 13 * * *"),
@@ -49,6 +49,7 @@ def g():
         country_code, start=start_date, end=end_date
     )
     load = client.query_load_forecast(country_code, start=start_date, end=end_date)
+    # loop backwards to get the latest available water and hydro data
     i = 0
     while True:
         if i < -40:
