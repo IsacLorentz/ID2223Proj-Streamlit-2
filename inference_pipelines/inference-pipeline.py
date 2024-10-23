@@ -22,7 +22,7 @@ if LOCAL == False:
             "pandera[io]",
         ]
     )
-    # probably it should be run 5 minutes past 1 instead
+
     @stub.function(
         image=image,
         schedule=modal.Cron("01 05 * * *"),
@@ -160,7 +160,7 @@ def get_energy_data():
     energy_data["p_7"] = last_day_values["p_6"]
     energy_data["date"] = energy_data["date"].dt.strftime("%Y-%m-%d")
 
-    # sshifting operation on the lagged price features (p_1 to p_7) in the energy_data DataFrame. It's adjusting these features for each day in the prediction period. Here's a breakdown of what's happening:
+    # shifting operation on the lagged price features (p_1 to p_7) in the energy_data DataFrame. It's adjusting these features for each day in the prediction period. 
     energy_data.iloc[1, 3:] = energy_data.iloc[0, 2:-1]
     energy_data.iloc[2, 4:] = energy_data.iloc[1, 3:-1]
     energy_data.iloc[3, 5:] = energy_data.iloc[2, 4:-1]
@@ -240,7 +240,7 @@ def g():
     price_predictions["predicted_price"] = price_pred_list
     fs = project.get_feature_store()
 
-    # This creates or retrieves a feature group in Hopsworks for storing predictions and inserts the new predictions into this feature group.
+    # Creates or retrieves a feature group in Hopsworks for storing predictions and inserts the new predictions into this feature group.
     price_pred_fg = fs.get_or_create_feature_group(
         name="price_predictions",
         version=1,

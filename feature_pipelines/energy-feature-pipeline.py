@@ -57,9 +57,7 @@ else:
 
 # drop the rows with missing values
 energy_data = energy_data.dropna(axis=0)
-# rename the columns
 energy_data.columns = ["date", "price", "load", "filling_rate"]
-# convert the date column to datetime
 energy_data["date"] = pd.to_datetime(energy_data["date"])
 # set the date column as the index
 energy_data = energy_data.set_index("date")
@@ -77,7 +75,7 @@ energy_data["p_4"] = energy_data["price"].shift(4)
 energy_data["p_5"] = energy_data["price"].shift(5)
 energy_data["p_6"] = energy_data["price"].shift(6)
 energy_data["p_7"] = energy_data["price"].shift(7)
-# drop the rows with missing values
+
 energy_data = energy_data.dropna()
 # reset the index
 energy_data = energy_data.reset_index(drop=True)

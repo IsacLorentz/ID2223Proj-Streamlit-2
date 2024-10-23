@@ -49,6 +49,7 @@ def g():
         country_code, start=start_date, end=end_date
     )
     load = client.query_load_forecast(country_code, start=start_date, end=end_date)
+    # loop backwards to get the latest available water and hydro data
     i = 0
     while True:
         if i < -40:
